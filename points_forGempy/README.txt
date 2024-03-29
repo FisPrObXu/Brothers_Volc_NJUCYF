@@ -1,1 +1,0 @@
-#points for initial geomodeling
