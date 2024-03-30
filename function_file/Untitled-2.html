@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Plotly Hover Image Display</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+
+<div id="plot"></div>
+<div id="imageContainer" style="margin-top: 20px;"></div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const data = [
+    {X: 179.1145833, Y: -34.92291667, Z: -2233, formation: 'Dolomite'},
+    {X: 179.1145833, Y: -34.92291667, Z: -2833, formation: 'Limestone'},
+    {X: 179.1145833, Y: -34.92291667, Z: -2533, formation: 'Limestone'},
+    {X: 179.1145833, Y: -34.92291667, Z: -3133, formation: 'Sandstone'},
+    {X: 179.1145833, Y: -34.92291667, Z: -3733, formation: 'Shale'},
+    {X: 179.1145833, Y: -34.92291667, Z: -3433, formation: 'Shale'},
+    {X: 179.0604167, Y: -34.86875, Z: -2146, formation: 'Chalk'},
+    {X: 179.0354167, Y: -34.84375, Z: -2145, formation: 'Chalk'},
+    {X: 179.0854167, Y: -34.89375, Z: -2140, formation: 'Chalk'},
+    {X: 179.0770833, Y: -34.88541667, Z: -2105, formation: 'Chalk'},
+    {X: 179.0229167, Y: -34.83125, Z: -2102, formation: 'Chalk'},
+    {X: 179.06875, Y: -34.87708333, Z: -2063, formation: 'Chalk'},
+    {X: 179.0479167, Y: -34.85625, Z: -2051, formation: 'Chalk'},
+    {X: 179.05625, Y: -34.86458333, Z: -2041, formation: 'Chalk'},
+    {X: 179.0395833, Y: -34.84791667, Z: -2040, formation: 'Chalk'},
+    {X: 179.0270833, Y: -34.83541667, Z: -2022, formation: 'Chalk'},
+    {X: 179.0895833, Y: -34.89791667, Z: -2017, formation: 'Chalk'},
+    {X: 179.0729167, Y: -34.88125, Z: -1998, formation: 'Chalk'},
+    {X: 179.03125, Y: -34.83958333, Z: -1986, formation: 'Chalk'},
+    {X: 179.0520833, Y: -34.86041667, Z: -1975, formation: 'Chalk'},
+    {X: 179.0645833, Y: -34.87291667, Z: -1968, formation: 'Chalk'},
+    {X: 179.04375, Y: -34.85208333, Z: -1909, formation: 'Chalk'},
+    {X: 179.08125, Y: -34.88958333, Z: -1906, formation: 'Chalk'},
+    {X: 179.0604167, Y: -34.86875, Z: -1846, formation: 'Chalk'},
+    {X: 179.0354167, Y: -34.84375, Z: -1845, formation: 'Chalk'},
+    {X: 179.0854167, Y: -34.89375, Z: -1840, formation: 'Chalk'},
+    {X: 179.0770833, Y: -34.88541667, Z: -1805, formation: 'Chalk'},
+    {X: 179.06875, Y: -34.87708333, Z: -1763, formation: 'Chalk'},
+    {X: 179.0479167, Y: -34.85625, Z: -1751, formation: 'Chalk'},
+    {X: 179.05625, Y: -34.86458333, Z: -1741, formation: 'Chalk'},
+    {X: 179.0395833, Y: -34.84791667, Z: -1740, formation: 'Chalk'},
+    {X: 179.0729167, Y: -34.88125, Z: -1698, formation: 'Chalk'},
+    {X: 179.0520833, Y: -34.86041667, Z: -1675, formation: 'Chalk'},
+    {X: 179.0645833, Y: -34.87291667, Z: -1668, formation: 'Chalk'},
+    {X: 179.04375, Y: -34.85208333, Z: -1609, formation: 'Chalk'},
+    {X: 179.08125, Y: -34.88958333, Z: -1606, formation: 'Chalk'},
+    {X: 179.0770833, Y: -34.88541667, Z: -1505, formation: 'Chalk'},
+    {X: 179.06875, Y: -34.87708333, Z: -1463, formation: 'Chalk'},
+    {X: 179.0479167, Y: -34.85625, Z: -1451, formation: 'Chalk'},
+    {X: 179.0729167, Y: -34.88125, Z: -1398, formation: 'Chalk'},
+    {X: 179.0520833, Y: -34.86041667, Z: -1375, formation: 'Chalk'},
+    {X: 179.04375, Y: -34.85208333, Z: -2509, formation: 'Dolomite'},
+    {X: 179.08125, Y: -34.88958333, Z: -2506, formation: 'Dolomite'},
+    {X: 179.01875, Y: -34.82708333, Z: -2481, formation: 'Dolomite'},
+    {X: 179.09375, Y: -34.90208333, Z: -2454, formation: 'Dolomite'},
+    {X: 179.0604167, Y: -34.86875, Z: -2446, formation: 'Dolomite'},
+    {X: 179.0354167, Y: -34.84375, Z: -2445, formation: 'Dolomite'},
+    {X: 179.0854167, Y: -34.89375, Z: -2440, formation: 'Dolomite'},
+    {X: 179.0770833, Y: -34.88541667, Z: -2405, formation: 'Dolomite'},
+    {X: 179.0229167, Y: -34.83125, Z: -2402, formation: 'Dolomite'},
+    {X: 179.06875, Y: -34.87708333, Z: -2363, formation: 'Dolomite'},
+    {X: 179.0479167, Y: -34.85625, Z: -2351, formation: 'Dolomite'},
+    {X: 179.05625, Y: -34.86458333, Z: -2341, formation: 'Dolomite'},
+    {X: 179.0395833, Y: -34.84791667, Z: -2340, formation: 'Dolomite'},
+    {X: 179.0270833, Y: -34.83541667, Z: -2322, formation: 'Dolomite'},
+    {X: 179.0895833, Y: -34.89791667, Z: -2317, formation: 'Dolomite'},
+    {X: 179.0729167, Y: -34.88125, Z: -2298, formation: 'Dolomite'},
+    {X: 179.03125, Y: -34.83958333, Z: -2286, formation: 'Dolomite'},
+    {X: 179.10625, Y: -34.91458333, Z: -2279, formation: 'Dolomite'},
+    {X: 179.0520833, Y: -34.86041667, Z: -2275, formation: 'Dolomite'},
+    {X: 179.1020833, Y: -34.91041667, Z: -2271, formation: 'Dolomite'},
+    {X: 179.0645833, Y: -34.87291667, Z: -2268, formation: 'Dolomite'},
+    {X: 179.0979167, Y: -34.90625, Z: -2259, formation: 'Dolomite'},
+    {X: 179.1104167, Y: -34.91875, Z: -2240, formation: 'Dolomite'},
+    {X: 179.04375, Y: -34.85208333, Z: -2209, formation: 'Dolomite'},
+    {X: 179.08125, Y: -34.88958333, Z: -2206, formation: 'Dolomite'},
+    {X: 179.01875, Y: -34.82708333, Z: -2181, formation: 'Dolomite'},
+    {X: 179.09375, Y: -34.90208333, Z: -2154, formation: 'Dolomite'},
+    {X: 179.0645833, Y: -34.87291667, Z: -2868, formation: 'Limestone'},
+    {X: 179.0979167, Y: -34.90625, Z: -2859, formation: 'Limestone'},
+    {X: 179.1104167, Y: -34.91875, Z: -2840, formation: 'Limestone'},
+    {X: 179.04375, Y: -34.85208333, Z: -2809, formation: 'Limestone'},
+    {X: 179.08125, Y: -34.88958333, Z: -2806, formation: 'Limestone'},
+    {X: 179.01875, Y: -34.82708333, Z: -2781, formation: 'Limestone'},
+    {X: 179.09375, Y: -34.90208333, Z: -2754, formation: 'Limestone'},
+    {X: 179.0604167, Y: -34.86875, Z: -2746, formation: 'Limestone'},
+    {X: 179.0354167, Y: -34.84375, Z: -2745, formation: 'Limestone'},
+    {X: 179.0854167, Y: -34.89375, Z: -2740, formation: 'Limestone'},
+    {X: 179.0770833, Y: -34.88541667, Z: -2705, formation: 'Limestone'},
+    {X: 179.0229167, Y: -34.83125, Z: -2702, formation: 'Limestone'},
+    {X: 179.06875, Y: -34.87708333, Z: -2663, formation: 'Limestone'},
+    {X: 179.0479167, Y: -34.85625, Z: -2651, formation: 'Limestone'},
+    {X: 179.05625, Y: -34.86458333, Z: -2641, formation: 'Limestone'},
+    {X: 179.0395833, Y: -34.84791667, Z: -2640, formation: 'Limestone'},
+    {X: 179.0270833, Y: -34.83541667, Z: -2622, formation: 'Limestone'},
+    {X: 179.0895833, Y: -34.89791667, Z: -2617, formation: 'Limestone'},
+    {X: 179.0729167, Y: -34.88125, Z: -2598, formation: 'Limestone'},
+    {X: 179.03125, Y: -34.83958333, Z: -2586, formation: 'Limestone'},
+    {X: 179.10625, Y: -34.91458333, Z: -2579, formation: 'Limestone'},
+    {X: 179.0520833, Y: -34.86041667, Z: -2575, formation: 'Limestone'},
+    {X: 179.1020833, Y: -34.91041667, Z: -2571, formation: 'Limestone'},
+    {X: 179.0645833, Y: -34.87291667, Z: -2568, formation: 'Limestone'},
+    {X: 179.0979167, Y: -34.90625, Z: -2559, formation: 'Limestone'},
+    {X: 179.1104167, Y: -34.91875, Z: -2540, formation: 'Limestone'},
+    {X: 179.05625, Y: -34.86458333, Z: -3241, formation: 'Sandstone'},
+    {X: 179.0395833, Y: -34.84791667, Z: -3240, formation: 'Sandstone'},
+    {X: 179.0270833, Y: -34.83541667, Z: -3222, formation: 'Sandstone'},
+    {X: 179.0895833, Y: -34.89791667, Z: -3217, formation: 'Sandstone'},
+    {X: 179.03125, Y: -34.83958333, Z: -3186, formation: 'Sandstone'},
+    {X: 179.10625, Y: -34.91458333, Z: -3179, formation: 'Sandstone'},
+    {X: 179.1020833, Y: -34.91041667, Z: -3171, formation: 'Sandstone'},
+    {X: 179.0645833, Y: -34.87291667, Z: -3168, formation: 'Sandstone'},
+    {X: 179.0979167, Y: -34.90625, Z: -3159, formation: 'Sandstone'},
+    {X: 179.1104167, Y: -34.91875, Z: -3140, formation: 'Sandstone'},
+    {X: 179.04375, Y: -34.85208333, Z: -3109, formation: 'Sandstone'},
+    {X: 179.08125, Y: -34.88958333, Z: -3106, formation: 'Sandstone'},
+    {X: 179.01875, Y: -34.82708333, Z: -3081, formation: 'Sandstone'},
+    {X: 179.09375, Y: -34.90208333, Z: -3054, formation: 'Sandstone'},
+    {X: 179.0604167, Y: -34.86875, Z: -3046, formation: 'Sandstone'},
+    {X: 179.0354167, Y: -34.84375, Z: -3045, formation: 'Sandstone'},
+    {X: 179.0854167, Y: -34.89375, Z: -3040, formation: 'Sandstone'},
+    {X: 179.0770833, Y: -34.88541667, Z: -3005, formation: 'Sandstone'},
+    {X: 179.0229167, Y: -34.83125, Z: -3002, formation: 'Sandstone'},
+    {X: 179.06875, Y: -34.87708333, Z: -2963, formation: 'Sandstone'},
+    {X: 179.0479167, Y: -34.85625, Z: -2951, formation: 'Sandstone'},
+    {X: 179.05625, Y: -34.86458333, Z: -2941, formation: 'Sandstone'},
+    {X: 179.0395833, Y: -34.84791667, Z: -2940, formation: 'Sandstone'},
+    {X: 179.0270833, Y: -34.83541667, Z: -2922, formation: 'Sandstone'},
+    {X: 179.0895833, Y: -34.89791667, Z: -2917, formation: 'Sandstone'},
+    {X: 179.0729167, Y: -34.88125, Z: -2898, formation: 'Sandstone'},
+    {X: 179.03125, Y: -34.83958333, Z: -2886, formation: 'Sandstone'},
+    {X: 179.10625, Y: -34.91458333, Z: -2879, formation: 'Sandstone'},
+    {X: 179.0520833, Y: -34.86041667, Z: -2875, formation: 'Sandstone'},
+    {X: 179.1020833, Y: -34.91041667, Z: -2871, formation: 'Sandstone'},
+    {X: 179.10625, Y: -34.91458333, Z: -3779, formation: 'Shale'},
+    {X: 179.1020833, Y: -34.91041667, Z: -3771, formation: 'Shale'},
+    {X: 179.0979167, Y: -34.90625, Z: -3759, formation: 'Shale'},
+    {X: 179.1104167, Y: -34.91875, Z: -3740, formation: 'Shale'},
+    {X: 179.01875, Y: -34.82708333, Z: -3681, formation: 'Shale'},
+    {X: 179.09375, Y: -34.90208333, Z: -3654, formation: 'Shale'},
+    {X: 179.0229167, Y: -34.83125, Z: -3602, formation: 'Shale'},
+    {X: 179.0270833, Y: -34.83541667, Z: -3522, formation: 'Shale'},
+    {X: 179.0895833, Y: -34.89791667, Z: -3517, formation: 'Shale'},
+    {X: 179.03125, Y: -34.83958333, Z: -3486, formation: 'Shale'},
+    {X: 179.10625, Y: -34.91458333, Z: -3479, formation: 'Shale'},
+    {X: 179.1020833, Y: -34.91041667, Z: -3471, formation: 'Shale'},
+    {X: 179.0979167, Y: -34.90625, Z: -3459, formation: 'Shale'},
+    {X: 179.1104167, Y: -34.91875, Z: -3440, formation: 'Shale'},
+    {X: 179.01875, Y: -34.82708333, Z: -3381, formation: 'Shale'},
+    {X: 179.09375, Y: -34.90208333, Z: -3354, formation: 'Shale'},
+    {X: 179.0604167, Y: -34.86875, Z: -3346, formation: 'Shale'},
+    {X: 179.0354167, Y: -34.84375, Z: -3345, formation: 'Shale'},
+    {X: 179.0854167, Y: -34.89375, Z: -3340, formation: 'Shale'},
+    {X: 179.0229167, Y: -34.83125, Z: -3302, formation: 'Shale'},
+    ];
+
+    const specialX = 179.0729;
+    const imageUrls = [
+        'https://raw.githubusercontent.com/FisPrObXu/Brothers_Volc_NJUCYF/main/corephoto/1530A/376U1530A1.png',
+        'https://raw.githubusercontent.com/FisPrObXu/Brothers_Volc_NJUCYF/main/corephoto/1530A/376U1530A19.png',
+        'https://raw.githubusercontent.com/FisPrObXu/Brothers_Volc_NJUCYF/main/corephoto/1530A/376U1530A37.png',
+        'https://raw.githubusercontent.com/FisPrObXu/Brothers_Volc_NJUCYF/main/corephoto/1530A/376U1530A56.png',
+        'https://raw.githubusercontent.com/FisPrObXu/Brothers_Volc_NJUCYF/main/corephoto/1530A/376U1530A74.png',
+        'https://raw.githubusercontent.com/FisPrObXu/Brothers_Volc_NJUCYF/main/corephoto/1530A/376U1530A93.png'
+    ];
+
+    // 筛选出X值接近179.0729的点，并为它们分配图片
+    const filteredData = data.filter(row => Math.abs(row.X - specialX) < 0.001);
+
+    const traces = filteredData.map((row, index) => ({
+        x: [row.X],
+        y: [row.Z],
+        mode: 'markers',
+        marker: {size: 12, color: index < imageUrls.length ? 'red' : 'blue'}, // 特定点为红色
+        type: 'scatter',
+        customdata: [imageUrls[index % imageUrls.length]], // 循环使用图片URL，确保每个点都有图片
+        hoverinfo: 'text',
+        text: ['Click to see image'] // 提示用户点击查看图片
+    }));
+
+    const layout = {
+        title: 'Hover over red points to display images',
+        xaxis: {title: 'X Axis'},
+        yaxis: {title: 'Z Axis', autorange: 'reversed'}
+    };
+
+    Plotly.newPlot('plot', traces, layout);
+
+    document.getElementById('plot').on('plotly_hover', function(data) {
+        const imageUrl = data.points[0].customdata[0];
+        if (imageUrl) {
+            const imgElement = document.createElement('img');
+            imgElement.src = imageUrl;
+            imgElement.style.maxWidth = '200px'; // 控制图片大小
+            imgElement.style.maxHeight = '200px';
+            
+            const imageContainer = document.getElementById('imageContainer');
+            imageContainer.innerHTML = ''; // 清除之前的图片
+            imageContainer.appendChild(imgElement); // 添加新的图片
+        }
+    });
+});
+</script>
+
+</body>
+</html>
