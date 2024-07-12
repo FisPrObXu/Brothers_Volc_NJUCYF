@@ -1,0 +1,51 @@
+; ------------------- Initial Model Setup -------------------
+model new
+
+; Import the mesh grid
+zone import "firsttry_demo_linestructure2_1_GVol_Binary.f3grid"
+zone face group 'Fault2' slot 'joint' internal range group 'IF_Fault2'
+zone joint configure
+zone joint create by-slot 'joint' separate
+
+zone group 'Hostrock_1' slot 'geology' range group 'ZG_001'
+zone group 'Hostrock_2' slot 'geology' range group 'ZG_002'
+
+
+; Define properties for Hostrock_1 and Hostrock_2
+zone cmodel assign hoek-brown range group 'Hostrock_1'
+zone property density 2800 young 6e9 poisson 0.25 range group 'Hostrock_1'
+zone property constant-sci 80e6 constant-mi 30 geological-strength-index 55 constant-dilation 10 range group 'Hostrock_1'
+
+zone cmodel assign hoek-brown range group 'Hostrock_2'
+zone property density 2400 young 5e9 poisson 0.35 range group 'Hostrock_2'
+zone property constant-sci 50e6 constant-mi 20 geological-strength-index 40 constant-dilation 5 range group 'Hostrock_2'
+
+; Define fault properties
+contact property stiffness-normal 1e8 stiffness-shear 1e8 friction 30 cohesion 50e3
+contact property friction 20 range group 'Fault2'
+
+; Apply gravity
+model gravity 9.81
+
+; Apply boundary conditions
+; Apply velocity conditions to simulate extension in x-axis
+zone face apply velocity -2e-5 0 0 range position-x 0 0
+zone face apply velocity 2e-5 0 0 range position-x -2000 -2000
+
+; Apply stress conditions to simulate positive stress in y-axis
+zone face apply stress-normal 1e8 range position-y 0 0
+zone face apply stress-normal 1e8 range position-y -2000 -2000
+
+; Ensure z-axis is only affected by gravity
+zone face apply velocity 0 0 -1e-10 range position-z 0 1600
+
+; Initialize stresses
+zone initialize-stresses ratio 1.0
+
+; Initialize zone joint stresses based on zone stresses
+zone joint initialize-stresses
+
+; Solve the initial model to reach equilibrium
+model solve cycles 1000
+
+model save 'initial_model2_1'

@@ -1,0 +1,28 @@
+; --- Confined test
+model restore 'initial_model2_1'
+
+; --- Fluid flow model
+model configure fluid-flow
+zone fluid property undrained-thermal-coefficient 5
+zone fluid property biot-modulus 4 mobility-coefficient 1e-10
+zone fluid property pore-pressure-generation on
+
+; --- Thermal model 
+model configure thermal
+zone thermal property conductivity 250 specific-heat 850 expansion 1e-5
+
+; Apply heat source at the origin
+zone apply source 18000 range position-x -1200 -1400 position-y 0 -2000 position-z 1400 0
+; Set thermal timestep
+model thermal timestep fix 8e-4
+
+; Solve thermal model
+model solve-thermal cycles 500
+
+; Solve static model
+model solve-static cycles 500
+
+; Save confined test results
+model save 'initial_model2_1_Therm-unconfined'
+
+program return
