@@ -1,0 +1,12 @@
+model new
+zone import "firsttry_demo_structure3_GVol_Binary.f3grid"
+
+; ----- identify layers -------
+zone group 'Magma_chamber' slot 'geology' range group 'ZG_001'
+zone group 'Hostrock' slot 'geology' range group 'ZG_002'
+zone group 'Caldera' slot 'geology' range group 'ZG_003'
+zone group 'Dike' slot 'geology' range group 'ZG_004'
+
+
+; Save the final model
+model save 'initial_model3'

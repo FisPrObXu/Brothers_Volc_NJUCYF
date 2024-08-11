@@ -1,0 +1,46 @@
+;It's an undrained demo
+model restore 'initial_model2_dynamic'
+; ------- main computation -------
+; --- fluid flow model
+model configure fluid-flow
+zone fluid property undrained-thermal-coefficient 5 range group 'Hostrock_1'
+zone fluid property biot-modulus 4 range group 'Hostrock_1'
+zone fluid property mobility-coefficient 1e-10 range group 'Hostrock_1'
+zone fluid property pore-pressure-generation on range group 'Hostrock_1'
+
+zone fluid property undrained-thermal-coefficient 6 range group 'Hostrock_2'
+zone fluid property biot-modulus 5 range group 'Hostrock_2'
+zone fluid property mobility-coefficient 1e-11 range group 'Hostrock_2'
+zone fluid property pore-pressure-generation on range group 'Hostrock_2'
+
+zone fluid property undrained-thermal-coefficient 2 range group 'Topo'
+zone fluid property biot-modulus 3 range group 'Topo'
+zone fluid property mobility-coefficient 1e-9 range group 'Topo'
+zone fluid property pore-pressure-generation on range group 'Topo'
+
+zone fluid property undrained-thermal-coefficient 8 range group 'Cham'
+zone fluid property biot-modulus 7 range group 'Cham'
+zone fluid property mobility-coefficient 1e-12 range group 'Cham'
+zone fluid property pore-pressure-generation on range group 'Cham'
+
+zone fluid property pore-pressure-generation on
+
+; --- thermal model 
+model configure thermal
+zone thermal property conductivity 5.5 specific-heat 3.5 expansion 2.5 range group 'Hostrock_1'
+zone thermal property conductivity 5.0 specific-heat 4.0 expansion 3.0 range group 'Hostrock_2'
+zone thermal property conductivity 1.5 specific-heat 2.0 expansion 1.0 range group 'Topo'
+zone thermal property conductivity 4.0 specific-heat 4.5 expansion 3.5 range group 'Cham'
+
+zone apply source 0.1 range position-x 700 1300 position-y 700 1300 position-z 0 500
+model save 'initial_model2_tpe_cpl_ini_demo'
+
+; --- unconfined test
+; settings
+model thermal timestep fix 1e-3
+; test
+model solve-thermal cycles 500
+model solve-static cycles 500
+model save 'initial_model2_tpe_cpl_unconfined'
+
+program return

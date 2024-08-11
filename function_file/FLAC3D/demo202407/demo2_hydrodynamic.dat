@@ -1,0 +1,27 @@
+; Restore the initial state of the model
+model restore 'initial_model2'
+
+; Reset velocities and displacements
+zone gridpoint initialize velocity (0,0,0)
+zone gridpoint initialize displacement (0,0,0)
+
+; Apply dynamic conditions
+fish define sine_wave
+    sine_wave = math.sin(1.0 * math.pi * zone.dynamic.time.total)
+end
+
+zone gridpoint free velocity-z range position-z 0 2500
+zone face apply velocity-z 1e1 fish sine_wave range position-x 700 1300 position-y 700 1300 position-z 0 2500
+zone face westergaard direction (1,1,0) height 2000 base 2500 ...
+          density-water 1000 range position-x 0 
+
+; Take some histories
+model history name='time' dynamic time-total
+zone  history name='zdisp' displacement-z position (850,1000,250)
+
+; Solve to time 10
+model dynamic on
+model solve time-total 20
+
+; Save the modified state of the model
+model save 'initial_model2_dynamic'

@@ -12,9 +12,10 @@ model configure thermal
 zone thermal property conductivity 250 specific-heat 850 expansion 1e-5
 
 ; Apply heat source at the origin
-zone apply source 18000 range position-x -1200 -1400 position-y 0 -2000 position-z 1400 0
+zone apply source 18000 range position-x -1000 -1200 position-y -1000 -1200 position-z 1400 0
+
 ; Set thermal timestep
-model thermal timestep fix 8e-4
+model thermal timestep fix 100
 
 ; Solve thermal model
 model solve-thermal cycles 500

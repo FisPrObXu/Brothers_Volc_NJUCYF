@@ -1,0 +1,81 @@
+; ------------------- Initial Model Setup -------------------
+model new
+
+; Import the mesh grid
+zone import "firsttry_demo_linestructure2_GVol_Binary.f3grid"
+
+; Set strain calculation mode
+model large-strain off
+
+; Configure dynamic analysis
+model configure dynamic
+
+; Identify boundaries for applying BCs later
+zone face skin
+
+; Group all faults for zone joints in the same slot.
+zone face group 'Fault2' slot 'joint' internal range group 'IF_Fault2'
+
+; ------ Create Zone Joints -------
+; This will do the separation efficiently, removing attaches, and also 
+; create the zone joints.
+zone joint configure
+zone joint create by-slot 'joint' separate
+
+; Group definitions based on the provided image
+zone group 'Hostrock_1' slot 'geology' range group 'ZG_005'
+zone group 'Hostrock_2' slot 'geology' range group 'ZG_002'
+zone group 'Topo' slot 'geology' range group 'ZG_006' or 'ZG_003'
+zone group 'Cham' slot 'geology' range group 'ZG_004' or 'ZG_001'
+
+; ---------------- Zone Properties (Pa) ------------------
+; Hostrock_1 - Low density, plastic hinge
+zone cmodel assign hoek-brown range group 'Hostrock_1'
+zone property density 2600 young 15e9 poisson 0.3 range group 'Hostrock_1'
+zone property constant-sci 80e6 constant-mi 30 geological-strength-index 55 constant-dilation 9 range group 'Hostrock_1'
+
+; Hostrock_2 - High density, rigid
+zone cmodel assign hoek-brown range group 'Hostrock_2'
+zone property density 2400 young 10e9 poisson 0.25 range group 'Hostrock_2'
+zone property constant-sci 60e6 constant-mi 25 geological-strength-index 50 constant-dilation 7 range group 'Hostrock_2'
+
+; Topo - Dump material
+zone cmodel assign elastic range group 'Topo'
+zone property density 1300 young 1e8 poisson 0.3 range group 'Topo'
+
+; Cham - Magma chamber
+zone cmodel assign elastic range group 'Cham'
+zone property density 3000 young 10e9 poisson 0.25 range group 'Cham'
+
+; ------------- Fault Properties ------------------
+contact property stiffness-normal 5e7 stiffness-shear 5e7 friction 30 cohesion 50e3
+contact property friction 30 range group 'Fault2'
+
+; ---------- Boundary and Initial Conditions ----------------
+model gravity 9.81
+
+; Apply boundary conditions to simulate compression and expansion
+; Apply velocity conditions to simulate extension in x-axis
+zone face apply velocity -1e-2 0 0 range group 'EF_002'
+zone face apply velocity 1e-2 0 0 range group 'EF_005'
+
+; Apply stress conditions to simulate positive stress in y-axis
+zone face apply stress-normal -1e7 range position-y 0 0
+zone face apply stress-normal -1e7 range position-y 2000 2000
+
+; z-axis
+zone face apply velocity 0 0 -1e-10 range position-z 0 3000
+zone face apply velocity 0 0 0 range group 'bottom'
+zone face apply stress-normal 1e4 gradient (0,0,10000) range position-z 0
+
+; Initialize stresses
+zone initialize-stresses ratio 1.0
+
+; Initialize zone joint stresses based on zone stresses
+zone joint initialize-stresses
+
+model dynamic off
+model solve convergence 1
+
+; Save the initial state of the model
+model save 'initial_model2'

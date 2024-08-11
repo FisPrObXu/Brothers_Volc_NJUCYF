@@ -1,0 +1,14 @@
+model new
+model title 'Pore pressure generation'
+zone create brick point 0 (0,0,0) point 1 (1,0,0) point 2 (0,1,0) point 3 (0,0,1) size 10 10 10
+zone cmodel assign elastic 
+zone property bulk 1e8 shear 0.3e8
+model configure fluid-flow
+zone fluid property pore-pressure-generation on
+zone fluid property biot-coefficient=0.3 mobility-coefficient=1e-10 biot-modulus=2.00001e10
+; --- boundary conditions ---
+zone gridpoint fix velocity
+; --- water source in a specific cell ---
+zone apply well 1.0 range position-x 0 0.1 position-y 0 0.1 position-z 0 0.1
+model solve-fluid cycles 2000 
+program return

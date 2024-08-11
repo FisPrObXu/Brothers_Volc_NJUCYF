@@ -1,0 +1,87 @@
+model new
+zone import "firsttry_demo_structure2_GVol_Binary.f3grid"
+
+; Set strain calculation mode
+model large-strain on
+
+; ----- identify layers -------
+zone group 'Chamber' slot 'geology' range group 'ZG_001'
+zone group 'Hostrock_3' slot 'geology' range group 'ZG_002'
+zone group 'Hostrock_2' slot 'geology' range group 'ZG_003'
+zone group 'Hostrock_1' slot 'geology' range group 'ZG_004'
+zone group 'Toplayer' slot 'geology' range group 'ZG_005'
+zone group 'Fault_1' slot 'geology' range group 'ZG_006'
+zone group 'Fault_2' slot 'geology' range group 'ZG_007'
+
+; Define boundary face groups based on your images
+zone face group 'EF_001' slot 'boundary' range group 'EF_001'
+zone face group 'EF_002' slot 'boundary' range group 'EF_002'
+zone face group 'EF_003' slot 'boundary' range group 'EF_003'
+zone face group 'EF_004' slot 'boundary' range group 'EF_004'
+zone face group 'EF_005' slot 'boundary' range group 'EF_005'
+zone face group 'EF_006' slot 'boundary' range group 'EF_006'
+zone face group 'EF_007' slot 'boundary' range group 'EF_007'
+
+; ---------------- zone properties (Pa) ------------------
+zone cmodel assign hoek-brown
+zone property density 2800 young 12e9 poisson 0.25 range group 'Hostrock_1'
+zone property constant-sci 70e6 constant-mi 25 geological-strength-index 55 ...
+  constant-dilation 8 range group 'Hostrock_1'
+
+zone property density 3000 young 5e9 poisson 0.5 range group 'Hostrock_2'
+zone property constant-sci 40e6 constant-mi 15 geological-strength-index 25 ...
+  constant-dilation 3 range group 'Hostrock_2'
+
+zone property density 2800 young 12e9 poisson 0.25 range group 'Hostrock_3'
+zone property constant-sci 70e6 constant-mi 25 geological-strength-index 55 ...
+  constant-dilation 8 range group 'Hostrock_3'
+
+zone property density 1900 young 6e9 poisson 0.3 range group 'Chamber'
+zone property constant-sci 25e6 constant-mi 15 geological-strength-index 35 ...
+  constant-dilation 6 range group 'Chamber'
+
+zone property density 1300 young 5e7 poisson 0.4 range group 'Toplayer'
+zone property constant-sci 20e3 constant-mi 5 geological-strength-index 15 ...
+  constant-dilation 1 range group 'Toplayer'
+
+zone property density 2500 young 10e8 poisson 0.5 range group 'Fault_1'
+zone property constant-sci 50e5 constant-mi 15 geological-strength-index 35 ...
+  constant-dilation 5 range group 'Fault_1'
+  
+zone property density 2500 young 10e8 poisson 0.5 range group 'Fault_2'
+zone property constant-sci 50e5 constant-mi 15 geological-strength-index 35 ...
+  constant-dilation 5 range group 'Fault_2'
+
+; ------------- fault properties ------------------
+contact property stiffness-normal 1e8 stiffness-shear 1e8 friction 30 cohesion 50e3 
+
+; main fault is weaker
+contact property friction 20 range group 'Fault_1'
+contact property friction 20 range group 'Fault_2'
+
+; ---------- Boundary and initial conditions ----------------
+model gravity 9.81
+
+; Fix the bottom plate
+zone face apply velocity 0 0 0 range position-z 0
+zone face apply velocity 0 0 0 range position-y 0
+zone face apply velocity 0 0 0 range position-y 2000
+
+; Apply sliding condition for Hostrock2 along Fault1 and Fault2
+; You may need to adjust the direction of the forces based on your specific model geometry
+zone apply force-z -1e7 range group 'Hostrock_2' 
+; Apply tensile movement with gradient for Hostrock1 and Hostrock3
+zone apply force-x -1e5 gradient (2e1,0,0) origin (0,0,0) range group 'Hostrock_1'
+zone apply force-x 1e5 gradient (2e1,0,0) origin (0,0,0) range group 'Hostrock_3'
+
+; Ensure Toplayer is only affected by gravity
+; No additional boundary conditions for Toplayer
+
+; Set initial zone stresses
+zone initialize-stresses ratio 1.0
+zone geometry tolerance 0.9
+
+model solve elastic
+
+; Save the final model
+model save 'initial'
